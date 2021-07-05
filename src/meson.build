@@ -21,7 +21,10 @@ run_command(
 sources = files(
   'application.rs',
   'config.rs',
-  'main.rs',
+  'pipe_connector/imp.rs',
+  'pipe_connector/mod.rs',
+  'bin/pipes.rs',
+  'lib.rs',
   'window.rs',
 )
 

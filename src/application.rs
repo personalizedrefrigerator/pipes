@@ -1,5 +1,5 @@
 use crate::config;
-use crate::window::ExampleApplicationWindow;
+use crate::window::MainApplicationWindow;
 use gio::ApplicationFlags;
 use glib::clone;
 use glib::WeakRef;
@@ -14,24 +14,24 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default)]
-    pub struct ExampleApplication {
-        pub window: OnceCell<WeakRef<ExampleApplicationWindow>>,
+    pub struct PipeCtrlApplication {
+        pub window: OnceCell<WeakRef<MainApplicationWindow>>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ExampleApplication {
+    impl ObjectSubclass for PipeCtrlApplication {
         const NAME: &'static str = "ExampleApplication";
-        type Type = super::ExampleApplication;
+        type Type = super::PipeCtrlApplication;
         type ParentType = gtk::Application;
     }
 
-    impl ObjectImpl for ExampleApplication {}
+    impl ObjectImpl for PipeCtrlApplication {}
 
-    impl gio::subclass::prelude::ApplicationImpl for ExampleApplication {
+    impl gio::subclass::prelude::ApplicationImpl for PipeCtrlApplication {
         fn activate(&self, app: &Self::Type) {
             debug!("GtkApplication<ExampleApplication>::activate");
 
-            let priv_ = ExampleApplication::from_instance(app);
+            let priv_ = PipeCtrlApplication::from_instance(app);
             if let Some(window) = priv_.window.get() {
                 let window = window.upgrade().unwrap();
                 window.show();
@@ -42,7 +42,7 @@ mod imp {
             app.set_resource_base_path(Some("/com/github/personalizedrefrigerator/pipes/"));
             app.setup_css();
 
-            let window = ExampleApplicationWindow::new(app);
+            let window = MainApplicationWindow::new(app);
             self.window
                 .set(window.downgrade())
                 .expect("Window already set.");
@@ -54,20 +54,20 @@ mod imp {
         }
 
         fn startup(&self, app: &Self::Type) {
-            debug!("GtkApplication<ExampleApplication>::startup");
+            debug!("GtkApplication<PipeCtrlApplication>::startup");
             self.parent_startup(app);
         }
     }
 
-    impl GtkApplicationImpl for ExampleApplication {}
+    impl GtkApplicationImpl for PipeCtrlApplication {}
 }
 
 glib::wrapper! {
-    pub struct ExampleApplication(ObjectSubclass<imp::ExampleApplication>)
+    pub struct PipeCtrlApplication(ObjectSubclass<imp::PipeCtrlApplication>)
         @extends gio::Application, gtk::Application, @implements gio::ActionMap, gio::ActionGroup;
 }
 
-impl ExampleApplication {
+impl PipeCtrlApplication {
     pub fn new() -> Self {
         glib::Object::new(&[
             ("application-id", &Some(config::APP_ID)),
@@ -76,8 +76,8 @@ impl ExampleApplication {
         .expect("Application initialization failed...")
     }
 
-    fn get_main_window(&self) -> ExampleApplicationWindow {
-        let priv_ = imp::ExampleApplication::from_instance(self);
+    fn get_main_window(&self) -> MainApplicationWindow {
+        let priv_ = imp::PipeCtrlApplication::from_instance(self);
         priv_.window.get().unwrap().upgrade().unwrap()
     }
 
@@ -127,8 +127,8 @@ impl ExampleApplication {
             .program_name("Pipes")
             .logo_icon_name(config::APP_ID)
             // Insert your license of choice here
-            // .license_type(gtk::License::MitX11)
-            .website("git@github.com:personalizedrefrigerator/pipes.git/")
+            .license_type(gtk::License::Gpl30)
+            .website("https://github.com/personalizedrefrigerator/pipes")
             .version(config::VERSION)
             .transient_for(&self.get_main_window())
             .modal(true)

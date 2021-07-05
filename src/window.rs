@@ -1,5 +1,6 @@
-use crate::application::ExampleApplication;
+use crate::application::PipeCtrlApplication;
 use crate::config::{APP_ID, PROFILE};
+use crate::pipe_connector::PipeConnector;
 use glib::signal::Inhibit;
 use gtk::subclass::prelude::*;
 use gtk::{self, prelude::*};
@@ -11,21 +12,26 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate)]
     #[template(resource = "/com/github/personalizedrefrigerator/pipes/ui/window.ui")]
-    pub struct ExampleApplicationWindow {
+    pub struct MainApplicationWindow {
         #[template_child]
         pub headerbar: TemplateChild<gtk::HeaderBar>,
+
+        #[template_child]
+        pub main_content: TemplateChild<PipeConnector>,
+
         pub settings: gio::Settings,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ExampleApplicationWindow {
-        const NAME: &'static str = "ExampleApplicationWindow";
-        type Type = super::ExampleApplicationWindow;
+    impl ObjectSubclass for MainApplicationWindow {
+        const NAME: &'static str = "MainApplicationWindow";
+        type Type = super::MainApplicationWindow;
         type ParentType = gtk::ApplicationWindow;
 
         fn new() -> Self {
             Self {
                 headerbar: TemplateChild::default(),
+                main_content: TemplateChild::default(),
                 settings: gio::Settings::new(APP_ID),
             }
         }
@@ -40,12 +46,13 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ExampleApplicationWindow {
+    impl ObjectImpl for MainApplicationWindow {
         fn constructed(&self, obj: &Self::Type) {
             self.parent_constructed(obj);
 
-            let builder =
-                gtk::Builder::from_resource("/com/github/personalizedrefrigerator/pipes/ui/shortcuts.ui");
+            let builder = gtk::Builder::from_resource(
+                "/com/github/personalizedrefrigerator/pipes/ui/shortcuts.ui",
+            );
             let shortcuts = builder.object("shortcuts").unwrap();
             obj.set_help_overlay(Some(&shortcuts));
 
@@ -59,8 +66,8 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ExampleApplicationWindow {}
-    impl WindowImpl for ExampleApplicationWindow {
+    impl WidgetImpl for MainApplicationWindow {}
+    impl WindowImpl for MainApplicationWindow {
         // save window state on delete event
         fn close_request(&self, obj: &Self::Type) -> Inhibit {
             if let Err(err) = obj.save_window_size() {
@@ -70,17 +77,17 @@ mod imp {
         }
     }
 
-    impl ApplicationWindowImpl for ExampleApplicationWindow {}
+    impl ApplicationWindowImpl for MainApplicationWindow {}
 }
 
 glib::wrapper! {
-    pub struct ExampleApplicationWindow(ObjectSubclass<imp::ExampleApplicationWindow>)
+    pub struct MainApplicationWindow(ObjectSubclass<imp::MainApplicationWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, @implements gio::ActionMap, gio::ActionGroup;
 }
 
-impl ExampleApplicationWindow {
-    pub fn new(app: &ExampleApplication) -> Self {
-        let window: Self = glib::Object::new(&[]).expect("Failed to create ExampleApplicationWindow");
+impl MainApplicationWindow {
+    pub fn new(app: &PipeCtrlApplication) -> Self {
+        let window: Self = glib::Object::new(&[]).expect("Failed to create MainApplicationWindow");
         window.set_application(Some(app));
 
         // Set icons for shell
@@ -90,7 +97,7 @@ impl ExampleApplicationWindow {
     }
 
     pub fn save_window_size(&self) -> Result<(), glib::BoolError> {
-        let settings = &imp::ExampleApplicationWindow::from_instance(self).settings;
+        let settings = &imp::MainApplicationWindow::from_instance(self).settings;
 
         let size = self.default_size();
 
@@ -103,7 +110,7 @@ impl ExampleApplicationWindow {
     }
 
     fn load_window_size(&self) {
-        let settings = &imp::ExampleApplicationWindow::from_instance(self).settings;
+        let settings = &imp::MainApplicationWindow::from_instance(self).settings;
 
         let width = settings.int("window-width");
         let height = settings.int("window-height");

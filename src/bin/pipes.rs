@@ -1,12 +1,7 @@
-mod application;
-#[rustfmt::skip]
-mod config;
-mod window;
-
-use application::ExampleApplication;
-use config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::*;
 use gtk::gio;
+use pipes::application::PipeCtrlApplication;
+use pipes::config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 
 fn main() {
     // Initialize logger, debug is carried out via debug!, info!, and warn!.
@@ -25,6 +20,6 @@ fn main() {
     let res = gio::Resource::load(RESOURCES_FILE).expect("Could not load gresource file");
     gio::resources_register(&res);
 
-    let app = ExampleApplication::new();
+    let app = PipeCtrlApplication::new();
     app.run();
 }

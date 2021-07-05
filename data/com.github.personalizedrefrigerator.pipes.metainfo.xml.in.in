@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Henry Heino 2019 <personalizedrefrigerator@gmail.com> -->
+<!-- Henry Heino 2021 <personalizedrefrigerator@gmail.com> -->
 <component type="desktop-application">
   <id>@app-id@</id>
   <metadata_license>CC0</metadata_license>
-  <!-- Insert your license of choice here -->
-  <!-- <project_license>MIT</project_license> -->
+  <project_license>GPLv3+</project_license>
   <name>Pipes</name>
-  <summary>Write a GTK + Rust application</summary>
+  <summary>A GUI for redirecting sources/sinks with Pipewire</summary>
   <description>
-    <p>A boilerplate template for GTK + Rust. It uses Meson as a build system and has flatpak support by default.</p>
+    <p>To-do</p>
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>git@github.com:personalizedrefrigerator/pipes.git/raw/master/data/resources/screenshots/screenshot1.png</image>
+      <image>https://github.com/personalizedrefrigerator/pipes/raw/master/data/resources/screenshots/screenshot1.png</image>
       <caption>Main window</caption>
     </screenshot>
   </screenshots>
-  <url type="homepage">git@github.com:personalizedrefrigerator/pipes.git</url>
-  <url type="bugtracker">git@github.com:personalizedrefrigerator/pipes.git/issues</url>
+  <url type="homepage">https://github.com/personalizedrefrigerator/pipes</url>
+  <url type="bugtracker">https://github.com/personalizedrefrigerator/pipes/issues</url>
   <content_rating type="oars-1.0" />
   <releases>
-    <release version="0.0.1" date="2019-07-11" />
+    <release version="0.0.1" date="2021-07-11" />
   </releases>
   <kudos>
      <!--

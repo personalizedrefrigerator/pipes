@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Pipes
-Comment=Write a GTK + Rust application
+Comment=Control Pipewire sources and sinks
 Type=Application
 Exec=pipes
 Terminal=false
